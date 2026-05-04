@@ -664,7 +664,10 @@ color: var(--blue);
    STATS STRIP
 ============================================================ */
 .stats {
-  background: var(--ink);
+  background:
+    radial-gradient(ellipse 80% 60% at 85% 0%, rgba(53,71,202,0.35), transparent 60%),
+    radial-gradient(ellipse 60% 80% at 0% 100%, rgba(53,71,202,0.18), transparent 55%),
+    linear-gradient(180deg, #0A0E1F 0%, #0D1228 100%);
   color: #fff;
   padding: 80px 0;
   position: relative;
@@ -717,11 +720,12 @@ color: var(--blue);
   margin-top: 18px;
 }
 .stat__detail {
-  margin-top: 10px;
+margin-top: 10px;
   font-family: var(--font-serif);
-  font-style: italic;
+  font-style: bold;
   font-size: 14px;
   color: rgba(255,255,255,0.7);
+  font-weight: bolder;
 }
 @media (max-width: 900px) {
   .stats__grid { grid-template-columns: 1fr 1fr; row-gap: 48px; }
