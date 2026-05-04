@@ -225,53 +225,59 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   justify-content: space-between;
   gap: 40px;
 }
+
 .nav__brand {
   display: flex;
   align-items: center;
-  gap: 14px;
   flex-shrink: 0;
 }
-.nav__crest {
-  width: 38px;
-  height: 38px;
-  background: var(--blue);
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: 0.02em;
-  position: relative;
-  overflow: hidden;
+.nav__logos {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
-.nav__crest::after {
+.nav__logo-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  max-width: 90px;
+  position: relative;
+}
+.nav__logo-slot:not(:last-child)::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 50%);
-  pointer-events: none;
+  right: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 22px;
+  background: var(--gray-200);
 }
-.nav__brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
+.nav__logo-slot svg,
+.nav__logo-slot img {
+  display: block;
+  height: 72px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
-.nav__brand-name {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--ink);
-  letter-spacing: -0.005em;
+
+@media (max-width: 1280px) {
+  .nav__logos { gap: 10px; }
+  .nav__logo-slot { height: 42px; max-width: 80px; }
+  .nav__logo-slot:not(:last-child)::after { right: -5px; height: 18px; }
+  .nav__logo-slot svg, .nav__logo-slot img { height: 35px; }
 }
-.nav__brand-sub {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--gray-500);
-  margin-top: 2px;
+@media (max-width: 1080px) {
+  .nav__logo-slot { max-width: 66px; }
+  .nav__logo-slot svg, .nav__logo-slot img { height: 50px; }
+}
+@media (max-width: 600px) {
+  .nav__logos { gap: 8px; }
+  .nav__logo-slot { max-width: 64px; }
+  .nav__logo-slot:not(:last-child)::after { display: none; }
+  .nav__logo-slot svg, .nav__logo-slot img { height: 42px; }
 }
 .nav__links {
   display: flex;
@@ -840,10 +846,8 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   border-radius: var(--radius-lg);
 }
 .endow__crest {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  background: var(--blue);
+  width: 100%;
+  height: 158px;
   display: grid;
   place-items: center;
   color: #fff;
@@ -851,14 +855,9 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   margin-bottom: 24px;
 }
 .endow__crest::after {
-  content: "";
-  position: absolute;
-  inset: -8px;
-  border: 1px dashed var(--blue);
-  border-radius: 50%;
-  opacity: 0.35;
+ 
 }
-.endow__crest svg { width: 44px; height: 44px; }
+.endow__crest img { width: 100%; height: 158px; }
 .endow__seal-name {
   font-family: var(--font-display);
   font-weight: 700;
@@ -1568,13 +1567,31 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 <!-- ============================ NAV ============================ -->
 <header class="nav" id="nav">
   <div class="nav__inner">
-    <a href="#hero" class="nav__brand">
-      <span class="nav__crest">М</span>
-      <span class="nav__brand-text">
-        <span class="nav__brand-name">МГИМО</span>
-        <span class="nav__brand-sub">МИД России</span>
-      </span>
-    </a>
+<a href="#hero" class="nav__brand">
+  <span class="nav__logos">
+   
+    <span class="nav__logo-slot">
+         <img src="img/logos/mgimo_uni_logo.svg"/>
+    </span>
+    <!-- SLOT 2 -->
+    <span class="nav__logo-slot">
+      <img src="img/logos/fund_logo_h_lightbg_CMYK_ru_bigger.svg"/>
+    </span>
+    <!-- SLOT 3 -->
+    <span class="nav__logo-slot">
+      <img src="img/logos/mgimo_odi_uni_logo.svg"/>
+     
+    </span>
+    <!-- SLOT 4 -->
+    <span class="nav__logo-slot">
+      <img src="img/logos/mgimo_finec_logo.svg"/>
+    </span>
+    <!-- SLOT 5 -->
+    <span class="nav__logo-slot">
+      <img src="img/logos/it_club_logo_1.svg"/>
+    </span>
+  </span>
+</a>
     <nav class="nav__links">
       <a href="#about" class="nav__link">Описание</a>
       <a href="#program" class="nav__link">Программа</a>
@@ -1583,7 +1600,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
       <a href="#faq" class="nav__link">ЧаВо</a>
       <a href="#contacts" class="nav__link">Контакты</a>
     </nav>
-    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+    <!-- <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
   <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
   </svg>
@@ -1591,7 +1608,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     <circle cx="12" cy="12" r="4"/>
     <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
   </svg>
-</button>
+</button> -->
     <div class="nav__cta">
       <a href="#contacts" class="btn btn--primary">Подать заявку <span class="arrow">→</span></a>
     </div>
@@ -1794,13 +1811,10 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     <div class="endow__inner">
       <div class="endow__seal reveal">
         <div class="endow__crest">
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 8L52 18v16c0 12-8 22-20 26-12-4-20-14-20-26V18L32 8z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M22 32l8 8 14-16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <img src="img/logos/fund_logo_h_lightbg_CMYK_ru.svg">
         </div>
-        <div class="endow__seal-name">Фонд Эндаумента</div>
-        <div class="endow__seal-sub">МГИМО МИД России</div>
+        <div class="endow__seal-name">Фонд Эндаумент МГИМО</div>
+      
         <div class="endow__seal-since">
           <span class="y">2007</span>
           <span class="l">&nbsp;года основания</span>
@@ -1809,8 +1823,8 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
       <div class="endow__body reveal" data-delay="1">
         <span class="eyebrow">Финансирование</span>
-        <h2 class="section-title">При поддержке <em>Фонда Эндаумента</em> МГИМО МИД России</h2>
-        <p>Мероприятие организуется при финансовой поддержке Фонда Эндаумента МГИМО МИД России — некоммерческой организации, содействующей развитию <strong>науки, образования и&nbsp;международного сотрудничества</strong>.</p>
+        <h2 class="section-title">При поддержке <em>Фонда Эндаумент МГИМО</em></h2>
+        <p>Мероприятие организуется при финансовой поддержке Фонда развития МГИМО МИД России — некоммерческой организации, содействующей развитию <strong>науки, образования и&nbsp;международного сотрудничества</strong>.</p>
         <p>Эндаумент МГИМО, созданный в&nbsp;<strong>2007 году</strong>, является старейшим и&nbsp;крупнейшим в&nbsp;России. Цели Фонда — аккумулирование целевого капитала для долгосрочного развития МГИМО и&nbsp;проектное финансирование согласно актуальным приоритетам Университета.</p>
       </div>
     </div>
