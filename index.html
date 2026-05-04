@@ -105,7 +105,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 }
 
 .section {
-  padding: 120px 0;
+  padding: 80px 0;
   position: relative;
 }
 .section--tight { padding: 80px 0; }
@@ -980,10 +980,18 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .tl-item__time {
   font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--blue);
   padding-top: 4px;
   letter-spacing: 0.02em;
+}
+.tl-class{
+  font-size: 11px;
+  padding-top: 4px;
+  padding-bottom: -2px;
+  color: grey;
+  font-weight: bolder;
+  text-align: left;
 }
 .tl-item__dot {
   width: 11px; height: 11px;
@@ -1024,71 +1032,152 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 /* ============================================================
    GALLERY
 ============================================================ */
+/* ============================================================
+   GALLERY — masonry, auto-fit
+============================================================ */
 .gallery { background: var(--gray-50); }
+
 .gallery__grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: 180px;
-  gap: 16px;
   margin-top: 56px;
+  column-count: 3;
+  column-gap: 16px;
 }
+@media (max-width: 1080px) { .gallery__grid { column-count: 2; } }
+@media (max-width: 600px)  { .gallery__grid { column-count: 1; } }
+
 .g-item {
+  display: block;
   position: relative;
+  margin: 0 0 16px;
+  break-inside: avoid;
   overflow: hidden;
   border-radius: var(--radius);
   background: var(--gray-100);
   cursor: zoom-in;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
 }
-.g-item--wide { grid-column: span 3; }
-.g-item--sq { grid-column: span 2; }
-.g-item--tall { grid-row: span 2; grid-column: span 2; }
-.g-item__inner {
+.g-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+.g-item:hover img { transform: scale(1.04); }
+.g-item::after {
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--blue-50), var(--gray-100));
-  display: grid;
-  place-items: center;
-  color: var(--blue);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  transition: transform 0.6s var(--ease), filter 0.5s ease;
-}
-.g-item__inner svg {
-  width: 32px; height: 32px;
-  opacity: 0.4;
-  margin-bottom: 8px;
-}
-.g-item__inner span { display: block; }
-.g-item__overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(10,14,31,0.85) 100%);
-  display: flex;
-  align-items: flex-end;
-  padding: 20px;
+  background: linear-gradient(180deg, transparent 60%, rgba(10,14,31,0.6) 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
+  pointer-events: none;
 }
-.g-item__overlay span {
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 14px;
-}
-.g-item:hover .g-item__inner { transform: scale(1.06); }
-.g-item:hover .g-item__overlay { opacity: 1; }
+.g-item:hover::after { opacity: 1; }
 
-@media (max-width: 900px) {
-  .gallery__grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 160px;
-  }
-  .g-item--wide { grid-column: span 2; }
-  .g-item--sq { grid-column: span 1; }
-  .g-item--tall { grid-column: span 1; grid-row: span 2; }
+/* ============================================================
+   LIGHTBOX
+============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10,14,31,0.96);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
+.lightbox.is-open {
+  display: flex;
+  opacity: 1;
+}
+.lightbox__stage {
+  max-width: min(1400px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  position: relative;
+}
+.lightbox__img {
+  max-width: 100%;
+  max-height: calc(100vh - 160px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  animation: lbFade 0.4s var(--ease);
+}
+@keyframes lbFade {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.lightbox__caption {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+}
+.lightbox__close,
+.lightbox__nav {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  z-index: 1;
+}
+.lightbox__close:hover,
+.lightbox__nav:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  transform: scale(1.05);
+}
+.lightbox__close svg,
+.lightbox__nav svg {
+  width: 20px;
+  height: 20px;
+}
+.lightbox__close { top: 24px; right: 24px; }
+.lightbox__prev  { top: 50%; left: 24px; transform: translateY(-50%); }
+.lightbox__next  { top: 50%; right: 24px; transform: translateY(-50%); }
+.lightbox__prev:hover { transform: translateY(-50%) scale(1.05); }
+.lightbox__next:hover { transform: translateY(-50%) scale(1.05); }
+.lightbox__counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.55);
+}
+
+@media (max-width: 700px) {
+  .lightbox { padding: 20px; }
+  .lightbox__close, .lightbox__nav {
+    width: 40px; height: 40px;
+  }
+  .lightbox__close { top: 12px; right: 12px; }
+  .lightbox__prev  { left: 8px; }
+  .lightbox__next  { right: 8px; }
+}
+
+body.lb-locked { overflow: hidden; }
 
 /* ============================================================
    DOCUMENTS
@@ -1113,7 +1202,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .doc:nth-child(odd) { padding-right: 32px; border-right: 1px solid var(--gray-200); }
 .doc:nth-child(even) { padding-left: 32px; }
 .doc:hover { transform: translateX(8px); }
-
+.doc:nth-child(even):hover { padding-left: 40px; }
 .doc__icon {
   width: 56px; height: 56px;
   background: var(--blue-50);
@@ -1262,16 +1351,19 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   gap: 18px;
 }
 .contacts__avatar {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  background: var(--blue);
+  width: 100%; height: auto;
   display: grid;
-  place-items: center;
+  place-items: left;
   color: #fff;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 22px;
   letter-spacing: 0.02em;
+  background-size: contain;
+}
+.contacts__avatar img{
+   width: 67%; height: auto;
+   max-width: 210px;
 }
 .contacts__person-name {
   font-family: var(--font-display);
@@ -1405,34 +1497,47 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .footer__brand {
   display: flex;
   align-items: center;
-  gap: 14px;
   margin-bottom: 28px;
 }
-.footer__crest {
-  width: 44px; height: 44px;
-  background: var(--blue);
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 17px;
+.footer__logos {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
-.footer__brand-name {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 16px;
-  color: #fff;
+
+.footer__logo-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  max-width: 100px;
+  position: relative;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
 }
-.footer__brand-sub {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.5);
-  margin-top: 2px;
+.footer__logo-slot:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 24px;
+  background: rgba(255,255,255,0.18);
 }
+.footer__logo-slot svg,
+.footer__logo-slot img {
+  display: block;
+  height: 42px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+ ;
+
+
 .footer__about {
   font-size: 14px;
   line-height: 1.6;
@@ -1467,7 +1572,17 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   color: rgba(255,255,255,0.45);
   letter-spacing: 0.04em;
 }
-
+@media (max-width: 900px) {
+  .footer__logos {
+   justify-content: center;
+}
+   .footer__brand {
+justify-content: center
+}
+.footer__about{
+  max-width: 90%;
+}
+}
 @media (max-width: 900px) {
   .footer__top { grid-template-columns: 1fr 1fr; }
   .footer__brand-block { grid-column: span 2; }
@@ -1646,9 +1761,9 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     <span class="loc">МОСКВА</span>
   </div>
 <div class="hero__quote">
-  Данные.<br>
-  Методы.<br>
-  Интерпретация&nbsp;<span>—</span>
+  Моделирование.<br>
+  Алгоритмы.<br>
+  Приложения&nbsp;<span>—</span>
 </div>
 </div>
       <div class="hero__date-block">
@@ -1851,61 +1966,67 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     <div class="program__day is-active" data-day="1">
       <div class="timeline">
         <div class="tl-item reveal">
-          <div class="tl-item__time">09:00</div>
+          <div class="tl-item__time">09:00
+            <div class="tl-class">Холл, 1 этаж</div>
+          </div>
+          
           <div class="tl-item__dot"></div>
           <div>
             <div class="tl-item__title">Регистрация участников</div>
-            <div class="tl-item__desc">Регистрация очных участников, подключение онлайн-аудитории, приветственный кофе</div>
+            <div class="tl-item__desc">Регистрация очных участников, подключение онлайн-аудитории</div>
           </div>
         </div>
         <div class="tl-item reveal" data-delay="1">
-          <div class="tl-item__time">10:00</div>
+          <div class="tl-item__time">10:00
+            <div class="tl-class">Аудитория 232</div>
+          </div>
           <div class="tl-item__dot"></div>
           <div>
             <div class="tl-item__title">Торжественное открытие</div>
-            <div class="tl-item__desc">Приветственное слово ректора МГИМО и&nbsp;представителей Фонда Эндаумента</div>
+            <div class="tl-item__desc">Приветственное слово руководства филиалов МГИМО</div>
           </div>
         </div>
         <div class="tl-item reveal" data-delay="2">
-          <div class="tl-item__time">11:00</div>
+          <div class="tl-item__time">10:30
+            <div class="tl-class">Аудитория 232</div>
+          </div>
           <div class="tl-item__dot"></div>
           <div>
             <div class="tl-item__title">Пленарная сессия</div>
-            <div class="tl-item__desc">«Бизнес-аналитика как двигатель цифровой трансформации» — ключевые доклады</div>
+            <div class="tl-item__desc">Информация уточняется</div>
           </div>
         </div>
         <div class="tl-item reveal" data-delay="3">
-          <div class="tl-item__time">13:00</div>
+          <div class="tl-item__time">11:30
+            <div class="tl-class">Аудитория 232</div>
+          </div>
           <div class="tl-item__dot"></div>
           <div>
-            <div class="tl-item__title">Обед · Нетворкинг</div>
-            <div class="tl-item__desc">Свободное общение участников, кофе-брейк</div>
+            <div class="tl-item__title">Секция №1</div>
+            <div class="tl-item__desc">«Использование современных программных пакетов для анализа и моделирования социально-экономических процессов».</div>
           </div>
         </div>
         <div class="tl-item reveal" data-delay="4">
-          <div class="tl-item__time">14:00</div>
+          <div class="tl-item__time">14:00
+           
+          </div>
           <div class="tl-item__dot"></div>
           <div>
-            <div class="tl-item__title">Параллельные секции</div>
-            <div class="tl-item__desc">Программные решения · Методология анализа данных · Прикладные кейсы</div>
+            <div class="tl-item__title">Обед</div>
+            <div class="tl-item__desc"></div>
           </div>
         </div>
         <div class="tl-item reveal" data-delay="5">
-          <div class="tl-item__time">17:00</div>
+          <div class="tl-item__time">14:30
+            <div class="tl-class">Аудитория 232</div>
+          </div>
           <div class="tl-item__dot"></div>
           <div>
-            <div class="tl-item__title">Мастер-классы</div>
-            <div class="tl-item__desc">Практические занятия от&nbsp;экспертов-практиков по&nbsp;BI-инструментам</div>
+            <div class="tl-item__title">Секция №2</div>
+            <div class="tl-item__desc">«Программная реализация математических методов поиска решений».</div>
           </div>
         </div>
-        <div class="tl-item reveal" data-delay="6">
-          <div class="tl-item__time">19:00</div>
-          <div class="tl-item__dot"></div>
-          <div>
-            <div class="tl-item__title">Вечерний приём</div>
-            <div class="tl-item__desc">Неформальное общение участников и&nbsp;спикеров</div>
-          </div>
-        </div>
+
       </div>
     </div>
 
@@ -1913,30 +2034,32 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     <div class="program__day" data-day="2">
       <div class="timeline">
         <div class="tl-item reveal">
-          <div class="tl-item__time">09:30</div>
+          <div class="tl-item__time">10:00
+             <div class="tl-class">Аудитория 232</div>
+          </div>
           <div class="tl-item__dot"></div>
           <div>
-            <div class="tl-item__title">Сбор участников</div>
-            <div class="tl-item__desc">Начало второго дня, объявление расписания</div>
+            <div class="tl-item__title">Секция №3</div>
+            <div class="tl-item__desc">«Программные решения прикладных социально-экономических задач и задач вычислительной математики».</div>
           </div>
         </div>
         <div class="tl-item reveal" data-delay="1">
-          <div class="tl-item__time">10:00</div>
+          <div class="tl-item__time">14:00</div>
           <div class="tl-item__dot"></div>
           <div>
-            <div class="tl-item__title">Конкурс студенческих работ</div>
-            <div class="tl-item__desc">Презентации исследовательских проектов в&nbsp;области бизнес-аналитики</div>
+            <div class="tl-item__title">Обед</div>
+            <div class="tl-item__desc"></div>
           </div>
         </div>
         <div class="tl-item reveal" data-delay="2">
-          <div class="tl-item__time">12:00</div>
+          <div class="tl-item__time">14:30</div>
           <div class="tl-item__dot"></div>
           <div>
-            <div class="tl-item__title">Панельная дискуссия</div>
-            <div class="tl-item__desc">«Будущее BI глазами молодых исследователей» — Россия, Узбекистан, Казахстан</div>
+            <div class="tl-item__title">Информация уточняется</div>
+            <div class="tl-item__desc"></div>
           </div>
         </div>
-        <div class="tl-item reveal" data-delay="3">
+        <!-- <div class="tl-item reveal" data-delay="3">
           <div class="tl-item__time">13:30</div>
           <div class="tl-item__dot"></div>
           <div>
@@ -1958,7 +2081,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
           <div>
             <div class="tl-item__title">Торжественное закрытие</div>
             <div class="tl-item__desc">Заключительная церемония, фото на&nbsp;память, анонс следующей конференции</div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -1975,66 +2098,48 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
       <p class="section-sub">Фотоматериалы конференций прошлых лет</p>
     </div>
 
-    <div class="gallery__grid">
-      <div class="g-item g-item--wide reveal">
-        <div class="g-item__inner">
-          <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-            <span>Открытие · 2024</span>
-          </div>
-        </div>
-        <div class="g-item__overlay"><span>Просмотр →</span></div>
-      </div>
-      <div class="g-item g-item--sq reveal" data-delay="1">
-        <div class="g-item__inner">
-          <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-            <span>Пленарка</span>
-          </div>
-        </div>
-        <div class="g-item__overlay"><span>Просмотр →</span></div>
-      </div>
-      <div class="g-item g-item--tall reveal" data-delay="2">
-        <div class="g-item__inner">
-          <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-            <span>Спикеры</span>
-          </div>
-        </div>
-        <div class="g-item__overlay"><span>Просмотр →</span></div>
-      </div>
-      <div class="g-item g-item--sq reveal" data-delay="3">
-        <div class="g-item__inner">
-          <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-            <span>Дискуссия</span>
-          </div>
-        </div>
-        <div class="g-item__overlay"><span>Просмотр →</span></div>
-      </div>
-      <div class="g-item g-item--sq reveal" data-delay="4">
-        <div class="g-item__inner">
-          <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-            <span>Награждение</span>
-          </div>
-        </div>
-        <div class="g-item__overlay"><span>Просмотр →</span></div>
-      </div>
-      <div class="g-item g-item--wide reveal" data-delay="5">
-        <div class="g-item__inner">
-          <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-            <span>Закрытие · 2024</span>
-          </div>
-        </div>
-        <div class="g-item__overlay"><span>Просмотр →</span></div>
-      </div>
-    </div>
+   <div class="gallery__grid" id="galleryGrid">
+  <!-- Каждый элемент: <a> с href на полноразмерное фото -->
+  <a  type="button" class="g-item"  href="img/photos/photo_1.jpg" data-caption="Открытие · 2024">
+    <img src="img/photos/photo_1.jpg" alt="Открытие 2024" loading="lazy">
+  </a>
+  <a type="button" class="g-item"  href="img/photos/photo_2-3.jpg" data-caption="Пленарная сессия">
+    <img src="img/photos/photo_2-3.jpg" alt="Пленарная сессия" loading="lazy">
+  </a>
+  <a type="button" class="g-item"  href="img/photos/photo__2.jpg" data-caption="Спикеры">
+    <img src="img/photos/photo__2.jpg" alt="Спикеры" loading="lazy">
+  </a>
+  <a type="button" class="g-item"  href="img/photos/photo_5.jpg" data-caption="Дискуссия">
+    <img src="img/photos/photo_5.jpg" alt="Дискуссия" loading="lazy">
+  </a>
+  <a type="button" class="g-item"  href="img/photos/photo_3.jpg" data-caption="Награждение">
+    <img src="img/photos/photo_3.jpg" alt="Награждение" loading="lazy">
+  </a>
+  <a type="button" class="g-item"  href="img/photos/photo_4.jpg" data-caption="Закрытие · 2024">
+    <img src="img/photos/photo_4.jpg" alt="Закрытие 2024" loading="lazy">
+  </a>
+  <!-- Добавляйте сколько нужно — сетка сама подстроится -->
+</div>
   </div>
 </section>
-
-<!-- ============================ DOCS ============================ -->
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox__close" id="lbClose" aria-label="Закрыть">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <button class="lightbox__nav lightbox__prev" id="lbPrev" aria-label="Предыдущее">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="lightbox__nav lightbox__next" id="lbNext" aria-label="Следующее">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+  <div class="lightbox__stage">
+    <img class="lightbox__img" id="lbImg" src="" alt="">
+    <div class="lightbox__caption" id="lbCaption"></div>
+  </div>
+  <div class="lightbox__counter" id="lbCounter"></div>
+</div>
+<!-- ============================ DOCS ============================
 <section class="docs section" id="docs">
   <div class="container">
     <div class="reveal">
@@ -2086,7 +2191,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
       </a>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- ============================ FAQ ============================ -->
 <section class="faq section" id="faq">
@@ -2177,9 +2282,9 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
     <div class="contacts__grid">
       <div class="contacts__card reveal">
-        <div class="contacts__avatar">ОК</div>
+        <div class="contacts__avatar"><img src="img/logos/it_club_logo_1.svg"></div>
         <div>
-          <div class="contacts__person-name">Организационный комитет</div>
+          <div class="contacts__person-name">IT-клуб МГИМО-Одинцово</div>
           <div class="contacts__person-role">VII конференция МГИМО</div>
         </div>
         <div style="font-size: 14px; color: var(--gray-500); line-height: 1.6; margin-top: 8px;">
@@ -2190,11 +2295,11 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
       <div class="contacts__rows reveal" data-delay="1">
         <div class="contacts__row">
           <span class="k">Адрес</span>
-          <span class="v">Москва, проспект Вернадского, 76</span>
+          <span class="v">Одинцово, ул. Новоспортивная, 3</span>
         </div>
         <div class="contacts__row">
           <span class="k">Кампус</span>
-          <span class="v">МГИМО МИД России</span>
+          <span class="v">МГИМО - Одинцово</span>
         </div>
         <div class="contacts__row">
           <span class="k">Почта</span>
@@ -2232,13 +2337,15 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   <div class="container footer__inner">
     <div class="footer__top">
       <div class="footer__brand-block">
-        <div class="footer__brand">
-          <span class="footer__crest">М</span>
-          <span>
-            <span class="footer__brand-name">МГИМО</span><br>
-            <span class="footer__brand-sub">МИД России</span>
-          </span>
-        </div>
+      <div class="footer__brand">
+  <span class="footer__logos">
+    <span class="footer__logo-slot"> <img src="img/logos/mgimo_uni_logo.svg"/></span>
+    <span class="footer__logo-slot"> <img src="img/logos/fund_logo_h_lightbg_CMYK_ru_bigger.svg"/></span>
+    <span class="footer__logo-slot"> <img src="img/logos/mgimo_odi_uni_logo.svg"/></span>
+    <span class="footer__logo-slot"> <img src="img/logos/mgimo_finec_logo.svg"/></span>
+    <span class="footer__logo-slot"> <img src="img/logos/it_club_logo_1.svg"/></span>
+  </span>
+</div>
         <p class="footer__about">VII Международная студенческая научно-практическая конференция в&nbsp;гибридном формате «Программные решения в&nbsp;бизнес-аналитике». 2 — 3 июня 2026 года.</p>
       </div>
 
@@ -2259,7 +2366,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
         <ul>
           <li><a href="mailto:conference@mgimo.ru">conference@mgimo.ru</a></li>
           <li><a href="tel:+74954349500">+7 (495) 434-95-00</a></li>
-          <li><span style="color: rgba(255,255,255,0.5);">пр. Вернадского, 76, Москва</span></li>
+          <li><span style="color: rgba(255,255,255,0.5);">Одинцово, ул. Новоспортивная, 3</span></li>
         </ul>
       </div>
     </div>
@@ -2345,16 +2452,79 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 const root = document.documentElement;
 const themeToggle = document.getElementById('themeToggle');
 const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') root.setAttribute('data-theme', 'dark');
-themeToggle.addEventListener('click', () => {
-  const isDark = root.getAttribute('data-theme') === 'dark';
-  if (isDark) {
-    root.removeAttribute('data-theme');
-    localStorage.setItem('theme', 'light');
-  } else {
-    root.setAttribute('data-theme', 'dark');
-    localStorage.setItem('theme', 'dark');
-  }
+// if (savedTheme === 'dark') root.setAttribute('data-theme', 'dark');
+// themeToggle.addEventListener('click', () => {
+//   const isDark = root.getAttribute('data-theme') === 'dark';
+//   if (isDark) {
+//     root.removeAttribute('data-theme');
+//     localStorage.setItem('theme', 'light');
+//   } else {
+//     root.setAttribute('data-theme', 'dark');
+//     localStorage.setItem('theme', 'dark');
+//   }
+// });
+/* ============== Gallery lightbox ============== */
+const grid = document.getElementById('galleryGrid');
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImg');
+const lbCaption = document.getElementById('lbCaption');
+const lbCounter = document.getElementById('lbCounter');
+const lbClose = document.getElementById('lbClose');
+const lbPrev = document.getElementById('lbPrev');
+const lbNext = document.getElementById('lbNext');
+
+let lbIndex = 0;
+let lbItems = [];
+
+function openLightbox(idx) {
+  lbItems = Array.from(grid.querySelectorAll('.g-item'));
+  if (!lbItems.length) return;
+  lbIndex = idx;
+  showAt(lbIndex);
+  lb.classList.add('is-open');
+  lb.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('lb-locked');
+}
+function closeLightbox() {
+  lb.classList.remove('is-open');
+  lb.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('lb-locked');
+}
+function showAt(i) {
+  if (!lbItems.length) return;
+  lbIndex = (i + lbItems.length) % lbItems.length;
+  const a = lbItems[lbIndex];
+  const src = a.getAttribute('href');
+  const cap = a.getAttribute('data-caption') || '';
+  lbImg.src = src;
+  lbImg.alt = cap;
+  lbCaption.textContent = cap;
+  lbCounter.textContent = `${lbIndex + 1} / ${lbItems.length}`;
+  // restart fade animation
+  lbImg.style.animation = 'none';
+  lbImg.offsetHeight;
+  lbImg.style.animation = '';
+}
+
+if (grid) {
+  grid.addEventListener('click', (e) => {
+    const a = e.target.closest('.g-item');
+    if (!a) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const items = Array.from(grid.querySelectorAll('.g-item'));
+    openLightbox(items.indexOf(a));
+  }, { capture: true });
+}
+lbClose && lbClose.addEventListener('click', closeLightbox);
+lbPrev  && lbPrev.addEventListener('click', () => showAt(lbIndex - 1));
+lbNext  && lbNext.addEventListener('click', () => showAt(lbIndex + 1));
+lb && lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+document.addEventListener('keydown', (e) => {
+  if (!lb.classList.contains('is-open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowLeft')  showAt(lbIndex - 1);
+  else if (e.key === 'ArrowRight') showAt(lbIndex + 1);
 });
 </script>
 </body>
