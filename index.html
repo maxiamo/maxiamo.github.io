@@ -50,7 +50,22 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
-
+:root[data-theme="dark"] {
+  --ink: #F4F6FB;
+  --ink-2: #E3E6EE;
+  --gray-900: #EFF1F6;
+  --gray-700: #C8CDD9;
+  --gray-500: #8990A8;
+  --gray-400: #6E7388;
+  --gray-300: #3A3F55;
+  --gray-200: #232940;
+  --gray-100: #1A1F36;
+  --gray-50: #11152A;
+  --white: #161B33;
+  --bg: #0A0E1F;
+  --blue-50: #1A2150;
+  --blue-100: #243299;
+}
 /* ============================================================
    RESET & BASE
 ============================================================ */
@@ -67,6 +82,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  transition: background-color 0.7s var(--ease), color 0.4s var(--ease);
 }
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
@@ -329,84 +345,153 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 }
 
 /* ============================================================
-   HERO
+   HERO — split bicolor
 ============================================================ */
 .hero {
   position: relative;
-  padding: 140px 0 100px;
-  overflow: hidden;
-  background: var(--white);
   border-bottom: 1px solid var(--gray-200);
+  padding-top: 78px; /* высота nav */
 }
-.hero__grid-bg {
+.hero__split {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  min-height: calc(100vh - 78px);
+  min-height: calc(100svh - 78px);
+}
+
+/* LEFT — dark */
+.hero__left {
+  background: #0A0E1F;
+  color: #fff;
+  padding: 56px 56px 56px 64px;
+ position: relative;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.hero__left::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(53,71,202,0.32), transparent 60%),
+    radial-gradient(ellipse 50% 70% at 0% 100%, rgba(53,71,202,0.14), transparent 55%);
+  pointer-events: none;
+}
+/* .hero__left::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+} */
+.hero__left-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.hero__kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+.hero__badge {
+  align-self: flex-start;
+  background: rgba(53,71,202,0.15);
+  border-color: rgba(53,71,202,0.4);
+  color: #C7CEFB;
+}
+
+.hero__date-block {
+  position: relative;
+  z-index: 2;
+}
+.hero__date-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(96px, 14vw, 220px);
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+.hero__date-num .accent {
+  color: var(--blue);
+  font-weight: 300;
+  margin: 0 0.06em;
+  vertical-align: 0.12em;
+  font-size: 0.55em;
+}
+.hero__date-cap {
+  margin-top: 24px;
+  display: flex;
+  gap: 28px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.65);
+  text-transform: uppercase;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding-top: 16px;
+}
+
+.hero__anchor {
+ position: absolute;
+  right: 8%;
+  top: 8%;
+  width: 280px;
+  height: 280px;
+  z-index: 1;
+  opacity: 0.7;
+  animation: anchor-rotate 80s linear infinite;
+}
+@keyframes anchor-rotate { to { transform: rotate(360deg); } }
+
+/* RIGHT — light */
+.hero__right {
+ background: var(--white);
+  padding: 96px 64px 56px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.hero__right::before {
+  content: "";
   position: absolute;
   inset: 0;
   background-image:
     linear-gradient(to right, var(--gray-200) 1px, transparent 1px),
     linear-gradient(to bottom, var(--gray-200) 1px, transparent 1px);
   background-size: 80px 80px;
-  opacity: 0.5;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 80%);
+  opacity: 0.4;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%);
   pointer-events: none;
 }
-.hero__blob {
-  position: absolute;
-  width: 700px;
-  height: 700px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(53,71,202,0.18), transparent 65%);
-  filter: blur(40px);
-  pointer-events: none;
-  z-index: 0;
-}
-.hero__blob--a { top: -200px; right: -150px; }
-.hero__blob--b { bottom: -300px; left: -200px; opacity: 0.6; }
-
-.hero__inner {
-  position: relative;
-  z-index: 2;
-  max-width: var(--container-wide);
-  margin: 0 auto;
-  padding: 0 32px;
-}
-.hero__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  background: var(--blue-50);
-  color: var(--blue);
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 36px;
-  border: 1px solid var(--blue-100);
-}
-.hero__badge .dot {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--blue);
-  box-shadow: 0 0 0 4px rgba(53,71,202,0.18);
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  50% { box-shadow: 0 0 0 6px rgba(53,71,202,0.06); }
-}
-
 .hero__title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(46px, 7.4vw, 116px);
-  line-height: 0.96;
+  font-size: clamp(40px, 5.6vw, 88px);
+  line-height: 0.97;
   letter-spacing: -0.035em;
   color: var(--ink);
-  max-width: 18ch;
+  position: relative;
+  z-index: 2;
 }
 .hero__title em {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
   color: var(--blue);
-  letter-spacing: -0.02em;
 }
 .hero__title .reveal-line {
   display: block;
@@ -422,35 +507,34 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .hero__title .reveal-line:nth-child(3) > span { animation-delay: 0.45s; }
 @keyframes lineUp { to { transform: translateY(0); } }
 
-.hero__meta-grid {
-  margin-top: 64px;
-  display: grid;
-  grid-template-columns: 1.35fr 1fr;
-  gap: 80px;
-  align-items: end;
+.hero__right-bottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 40px;
 }
 .hero__lead {
-  font-family: var(--font-serif);
-  font-size: clamp(18px, 1.4vw, 22px);
-  line-height: 1.5;
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.55;
   color: var(--gray-700);
-  max-width: 50ch;
-  font-style: italic;
+  max-width: 48ch;
 }
 .hero__metalines {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 0;
+  border-top: 1px solid var(--gray-200);
 }
 .hero__metaline {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  border-top: 1px solid var(--gray-200);
-  padding-top: 14px;
   gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-200);
 }
-.hero__metaline:last-child { border-bottom: 1px solid var(--gray-200); padding-bottom: 14px; }
 .hero__metaline .k {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -461,116 +545,113 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 .hero__metaline .v {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--ink);
-  text-align: right;
-}
-.hero__metaline .v strong {
-  font-weight: 700;
-  color: var(--blue);
-}
-
-.hero__big-date {
-  margin-top: 80px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 32px;
-  align-items: end;
-  border-top: 1px solid var(--gray-200);
-  padding-top: 40px;
-}
-.hero__big-date-num {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(72px, 13vw, 200px);
-  line-height: 0.85;
-  letter-spacing: -0.045em;
-  color: var(--ink);
-}
-.hero__big-date-num span {
-  display: inline-block;
-  position: relative;
-}
-.hero__big-date-num .accent {
-color: var(--blue);
-  font-weight: 300;
-  margin: 0 0.08em;
-  vertical-align: 0.12em;
-  font-size: 0.7em;
-}
-.hero__big-date-info {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-bottom: 20px;
-}
-.hero__big-date-info span {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--gray-500);
-}
-.hero__big-date-info strong {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(18px, 1.6vw, 24px);
-  color: var(--ink);
-  letter-spacing: -0.01em;
 }
 .hero__actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  padding-bottom: 22px;
 }
-
-@media (max-width: 900px) {
-  .hero { padding: 110px 0 70px; }
-  .hero__meta-grid { grid-template-columns: 1fr; gap: 44px; margin-top: 44px; }
-  .hero__big-date { grid-template-columns: 1fr; gap: 24px; margin-top: 56px; padding-top: 32px; }
-  .hero__big-date-info { padding-bottom: 0; }
-  .hero__actions { padding-bottom: 0; }
+.hero__left-mid {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.hero__indexline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+.hero__indexline .bar {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.18);
+  max-width: 80px;
+}
+.hero__quote {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(18px, 1.6vw, 24px);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.7);
+  max-width: 24ch;
+}
+.hero__quote span {
+  color: var(--blue);
+  font-weight: 400;
+}
+@media (max-width: 1080px) {
+  .hero__split { grid-template-columns: 1fr; min-height: 0; }
+  .hero__left { padding: 56px 32px; min-height: 70vh; }
+  .hero__right { padding: 56px 32px; }
+  .hero__anchor { right: -120px; bottom: -120px; width: 320px; height: 320px; }
+}
+@media (max-width: 600px) {
+  .hero__left, .hero__right { padding: 40px 24px; }
 }
 
 /* ============================================================
-   MARQUEE / TICKER
+   BANNER STRIP — статичный «парадный» блок
 ============================================================ */
-.ticker {
-  background: var(--ink);
+.banner-strip {
+  background: #0A0E1F;
   color: #fff;
-  padding: 22px 0;
+  padding: 56px 0;
+  position: relative;
   overflow: hidden;
-  white-space: nowrap;
 }
-.ticker__track {
-  display: inline-flex;
-  gap: 60px;
-  animation: tickerScroll 40s linear infinite;
+.banner-strip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 80% at 50% 100%, rgba(53,71,202,0.22), transparent 60%);
+  pointer-events: none;
 }
-.ticker__item {
-  display: inline-flex;
+.banner-strip__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
   align-items: center;
-  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 28px;
   font-family: var(--font-display);
-  font-size: clamp(20px, 2vw, 28px);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: clamp(20px, 2.6vw, 38px);
+  letter-spacing: -0.015em;
+  text-align: center;
 }
-.ticker__item em {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  color: #A4B0F2;
-}
-.ticker__dot {
-  width: 8px; height: 8px;
+.banner-strip__inner .dot {
+  width: 8px;
+  height: 8px;
   background: var(--blue);
   border-radius: 50%;
   flex-shrink: 0;
 }
-@keyframes tickerScroll {
-  to { transform: translateX(-50%); }
+.banner-strip__year {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(14px, 1.2vw, 18px);
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-left: 8px;
+}
+@media (max-width: 600px) {
+  .banner-strip { padding: 40px 0; }
+  .banner-strip__inner { gap: 14px; font-size: 18px; }
 }
 
 /* ============================================================
@@ -720,12 +801,11 @@ color: var(--blue);
   margin-top: 18px;
 }
 .stat__detail {
-margin-top: 10px;
+  margin-top: 10px;
   font-family: var(--font-serif);
-  font-style: bold;
+  font-style: italic;
   font-size: 14px;
   color: rgba(255,255,255,0.7);
-  font-weight: bolder;
 }
 @media (max-width: 900px) {
   .stats__grid { grid-template-columns: 1fr 1fr; row-gap: 48px; }
@@ -1453,6 +1533,33 @@ margin-top: 10px;
 .hero__lead {
   font-weight: 400;
 }
+/* Theme toggle */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--gray-200);
+  background: transparent;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  margin-left: 8px;
+  transition: border-color 0.3s ease, color 0.3s ease, transform 0.4s var(--ease);
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: rotate(15deg);
+}
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 </style>
 </head>
 <body>
@@ -1475,6 +1582,15 @@ margin-top: 10px;
       <a href="#faq" class="nav__link">ЧаВо</a>
       <a href="#contacts" class="nav__link">Контакты</a>
     </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+  </svg>
+</button>
     <div class="nav__cta">
       <a href="#contacts" class="btn btn--primary">Подать заявку <span class="arrow">→</span></a>
     </div>
@@ -1494,84 +1610,104 @@ margin-top: 10px;
 
 <!-- ============================ HERO ============================ -->
 <section class="hero" id="hero">
-  <div class="hero__grid-bg"></div>
-  <div class="hero__blob hero__blob--a"></div>
-  <div class="hero__blob hero__blob--b"></div>
+  <div class="hero__split">
 
-  <div class="hero__inner">
-    <div class="hero__badge">
-      <span class="dot"></span>
-      Под эгидой МГИМО МИД России · VII конференция
-    </div>
+    <!-- LEFT: dark, date as hero -->
+    <div class="hero__left">
+      <div class="hero__left-top">
+        <div class="hero__badge">
+          <span class="dot"></span>
+          VII конференция · 2026
+        </div>
+        <div class="hero__kicker">МГИМО МИД России</div>
+      </div>
+<div class="hero__left-mid">
+  <div class="hero__indexline">
+    <span class="num">№ 07</span>
+    <span class="bar"></span>
+    <span class="loc">МОСКВА</span>
+  </div>
+<div class="hero__quote">
+  Данные.<br>
+  Методы.<br>
+  Интерпретация&nbsp;<span>—</span>
+</div>
+</div>
+      <div class="hero__date-block">
+        <div class="hero__date-num">
+          <span>02</span><span class="accent">—</span><span>03</span>
+        </div>
+        <div class="hero__date-cap">
+          <span>ИЮНЯ</span>
+          <span>2026</span>
+        </div>
+      </div>
 
-    <h1 class="hero__title">
-      <span class="reveal-line"><span>Программные</span></span>
-      <span class="reveal-line"><span>решения</span></span>
-      <span class="reveal-line"><span>в&nbsp;<em>бизнес-аналитике</em>.</span></span>
-    </h1>
-
-    <div class="hero__meta-grid">
-      <p class="hero__lead">
-        VII Международная студенческая научно-практическая конференция в&nbsp;гибридном формате — диалог исследователей, преподавателей и&nbsp;индустрии о&nbsp;цифровой трансформации аналитики.
-      </p>
-      <div class="hero__metalines">
-        <div class="hero__metaline">
-          <span class="k">Формат</span>
-          <span class="v">Гибридный · очно и&nbsp;онлайн</span>
-        </div>
-        <div class="hero__metaline">
-          <span class="k">Площадка</span>
-          <span class="v">МГИМО МИД России</span>
-        </div>
-        <div class="hero__metaline">
-          <span class="k">Языки</span>
-          <span class="v">Русский</span>
-        </div>
-        <div class="hero__metaline">
-          <span class="k">Год</span>
-          <span class="v"><strong>2026</strong></span>
-        </div>
+      <!-- decorative anchor — синяя композиция -->
+      <div class="hero__anchor" aria-hidden="true">
+        <svg viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="160" cy="160" r="158" stroke="#3547CA" stroke-width="1" opacity="0.35"/>
+          <circle cx="160" cy="160" r="120" stroke="#3547CA" stroke-width="1" opacity="0.5"/>
+          <circle cx="160" cy="160" r="80" stroke="#3547CA" stroke-width="1.5" opacity="0.7"/>
+          <circle cx="160" cy="160" r="40" fill="#3547CA"/>
+          <path d="M160 2 L160 318 M2 160 L318 160" stroke="#3547CA" stroke-width="0.5" opacity="0.4"/>
+        </svg>
       </div>
     </div>
 
-    <div class="hero__big-date">
-      <div class="hero__big-date-num">
-        <span>02</span><span class="accent">—</span><span>03</span>
-      </div>
-      <div class="hero__big-date-info">
-        <span>даты проведения</span>
-        <strong>июня 2026 года</strong>
-      </div>
-      <div class="hero__actions">
-        <a href="#contacts" class="btn btn--primary">Принять участие <span class="arrow">→</span></a>
-        <a href="#program" class="btn btn--ghost">Программа</a>
+    <!-- RIGHT: light, title + meta -->
+    <div class="hero__right">
+      <h1 class="hero__title">
+        <span class="reveal-line"><span>Программные</span></span>
+        <span class="reveal-line"><span>решения</span></span>
+        <span class="reveal-line"><span>в&nbsp;<em>бизнес-аналитике</em>.</span></span>
+      </h1>
+
+      <div class="hero__right-bottom">
+        <p class="hero__lead">
+          VII Международная студенческая научно-практическая конференция в&nbsp;гибридном формате. Диалог исследователей, преподавателей и&nbsp;индустрии.
+        </p>
+
+        <div class="hero__metalines">
+          <div class="hero__metaline">
+            <span class="k">Формат</span>
+            <span class="v">Гибридный · очно &amp; онлайн</span>
+          </div>
+          <div class="hero__metaline">
+            <span class="k">Площадка</span>
+            <span class="v">МГИМО МИД России</span>
+          </div>
+          <div class="hero__metaline">
+            <span class="k">Языки</span>
+            <span class="v">Русский</span>
+          </div>
+        </div>
+
+        <div class="hero__actions">
+          <a href="#contacts" class="btn btn--primary">Принять участие <span class="arrow">→</span></a>
+          <a href="#program" class="btn btn--ghost">Программа</a>
+        </div>
       </div>
     </div>
+
   </div>
 </section>
 
 <!-- ============================ TICKER ============================ -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker__track" id="tickerTrack">
-    <span class="ticker__item">VII Международная конференция <em>2026</em></span>
-    <span class="ticker__dot"></span>
-    <span class="ticker__item">Программные решения в&nbsp;<em>бизнес-аналитике</em></span>
-    <span class="ticker__dot"></span>
-    <span class="ticker__item">МГИМО МИД <em>России</em></span>
-    <span class="ticker__dot"></span>
-    <span class="ticker__item">2 — 3 <em>июня</em></span>
-    <span class="ticker__dot"></span>
-    <!-- duplicate for seamless loop -->
-    <span class="ticker__item">VII Международная конференция <em>2026</em></span>
-    <span class="ticker__dot"></span>
-    <span class="ticker__item">Программные решения в&nbsp;<em>бизнес-аналитике</em></span>
-    <span class="ticker__dot"></span>
-    <span class="ticker__item">МГИМО МИД <em>России</em></span>
-    <span class="ticker__dot"></span>
-    <span class="ticker__item">2 — 3 <em>июня</em></span>
-    <span class="ticker__dot"></span>
+<section class="banner-strip" aria-hidden="true">
+  <div class="container">
+    <div class="banner-strip__inner">
+      <span>Гибридный формат</span>
+      <span class="dot"></span>
+      <span>Россия</span>
+      <span class="dot"></span>
+      <span>Узбекистан</span>
+      <span class="dot"></span>
+      <span>Казахстан</span>
+      <span class="dot"></span>
+    </div>
   </div>
-</div>
+</section>
 
 <!-- ============================ ABOUT ============================ -->
 <section class="about section" id="about">
@@ -2191,7 +2327,20 @@ const io = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
+const root = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') root.setAttribute('data-theme', 'dark');
+themeToggle.addEventListener('click', () => {
+  const isDark = root.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    root.removeAttribute('data-theme');
+    localStorage.setItem('theme', 'light');
+  } else {
+    root.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', 'dark');
+  }
+});
 </script>
 </body>
 </html>
